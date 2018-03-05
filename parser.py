@@ -10,8 +10,10 @@ class Parser(argparse.ArgumentParser):
         # Model & Dataset Settings
         self.add_argument('--model', type=str, default=None, required=True,
                           help='the name of model')
-        self.add_argument('--model-path', type=str, default=None,
-                          help='the path of pre-trained model parameters (.pkl)'),
+        self.add_argument('--load', dest='model_path', type=str, default=None,
+                          help='the path of pre-trained model parameters (.pkl)')
+        self.add_argument('--save', dest='saving_model_path', type=str, default=None,
+                          help='the path of saving model parameters (.pkl)')
         self.add_argument('--data-path', type=str, default='./data/',
                           help='the path of dataset used for training')
         self.add_argument('--img-size', type=int, default=224,
@@ -36,5 +38,7 @@ class Parser(argparse.ArgumentParser):
                           help='which optimization algorithm used in training')
         self.add_argument('--gpu', action='store_true', default=False,
                           help='whether the model runs on GPU via CUDA')
+        self.add_argument('--loss-curve', dest='loss_curve_path', type=str, default=None,
+                          help='the path of saving image of loss curve')
         # self.add_argument('')
 

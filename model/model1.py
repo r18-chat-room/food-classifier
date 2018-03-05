@@ -1,6 +1,5 @@
 import torch.nn as nn
 import torch.nn.functional as F
-from model.spp import SpatialPyramidPool2D
 
 
 class Model1(nn.Module):
@@ -13,7 +12,6 @@ class Model1(nn.Module):
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.conv3 = nn.Conv2d(in_channels=16, out_channels=24, kernel_size=3, padding=1)
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.spp = SpatialPyramidPool2D(out_sizes=(1, 2, 4))
         self.fc1 = nn.Linear(in_features=24*56*56, out_features=256)
         self.fc2 = nn.Linear(in_features=256, out_features=64)
         self.fc3 = nn.Linear(in_features=64, out_features=category_size)
