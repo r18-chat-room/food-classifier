@@ -24,7 +24,7 @@ class Parser(argparse.ArgumentParser):
                           help='how many processes used for data loading')
 
         # Training Settings
-        self.add_argument('--lr', dest='learning_rate', type=float, default=0.0003,
+        self.add_argument('--lr', type=float, default=0.0003,
                           help='learning rate when training')
         self.add_argument('--momentum', type=float, default=0.95,
                           help='momentum in SGD optimization')
@@ -32,6 +32,8 @@ class Parser(argparse.ArgumentParser):
                           help='how many epochs to train')
         self.add_argument('--batch-size', type=int, default=8,
                           help='how many samples per batch to load')
+        self.add_argument('--optim', type=str, default='SGD', choices=['SGD', 'Adam'],
+                          help='which optimization algorithm used in training')
         self.add_argument('--gpu', action='store_true', default=False,
                           help='whether the model runs on GPU via CUDA')
         # self.add_argument('')
