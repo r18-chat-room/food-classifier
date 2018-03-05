@@ -38,5 +38,12 @@ def get_train_valid_loader(path, scale_size, batch_size, valid_size, num_workers
 
 
 def get_categories(path):
+    """
+    load categories from dataset folder and generate an dict of id2name.
+
+    :param path: the path of folder of the dataset
+
+    :return: a dict with id as key and name as value
+    """
     categories = find_classes(path)[1]
     return dict(zip(categories.values(), categories.keys()))
