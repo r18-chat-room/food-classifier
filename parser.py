@@ -4,10 +4,10 @@ import argparse
 class Parser(argparse.ArgumentParser):
     def __init__(self):
         super(Parser, self).__init__()
-        self.add_argument('phase', type=str, choices=['train', 'inference'],
-                          help='the phase of model')
+        self.add_argument('op', type=str, choices=['train', 'inference', 'info'],
+                          help='the operation of model')
 
-        self.add_argument('--model', type=str, default=None,
+        self.add_argument('--model', type=str, default=None, required=True,
                           help='the name of model')
         self.add_argument('--model-path', type=str, default=None,
                           help='the path of pre-trained model parameters (.pkl)'),

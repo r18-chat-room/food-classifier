@@ -4,3 +4,7 @@ def train(model, args):
 
 def reference(model, args):
     pass
+
+
+def load(model, path):
+    pass
