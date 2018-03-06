@@ -4,6 +4,19 @@ from torch.autograd import Variable
 
 
 def train(model, loader, epochs, optim, lr, momentum, cuda):
+    """
+    the phase of training.
+
+    :param model: the model object to train
+    :param loader: the data loader of train_dataset
+    :param epochs: how many epochs to train
+    :param optim: which optimization algorithm used in training
+    :param lr: learning rate
+    :param momentum: momentum in SGD optimization
+    :param cuda: whether the model runs on GPU via CUDA
+
+    :return: list of history losses
+    """
     logger = logging.getLogger()
     logger.info('start training {0}: epochs={1}'.format(model.name, epochs))
 
