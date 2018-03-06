@@ -1,7 +1,6 @@
 import logging
 import sys
 import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
 import time
 import model_op as op
@@ -21,12 +20,14 @@ parser = Parser()
 categories = get_categories('./data')
 args, _ = parser.parse_known_args(sys.argv[1:])
 
+mpl.use('Agg')
 mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei']
 mpl.rcParams['axes.unicode_minus'] = False
 mpl.rcParams['figure.figsize'] = (8, 6)
 np.random.seed(int(time.time()))
 
 if __name__ == '__main__':
+    import matplotlib.pyplot as plt
     net = model_list[args.model](args.category_size)
     train_loader, valid_loader = get_train_valid_loader(
         path=args.data_path, scale_size=args.img_size, batch_size=args.batch_size,
