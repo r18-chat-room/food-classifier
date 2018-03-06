@@ -5,7 +5,7 @@ import torch.nn.functional as F
 class Model1(nn.Module):
     name = 'Model1'
 
-    def __init__(self, category_size, phase='training'):
+    def __init__(self, category_size, phase='train'):
         super(Model1, self).__init__()
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=8, kernel_size=5, padding=2)
         self.conv2 = nn.Conv2d(in_channels=8, out_channels=16, kernel_size=3, padding=1)
