@@ -40,5 +40,7 @@ class Parser(argparse.ArgumentParser):
                           help='whether the model runs on GPU via CUDA')
         self.add_argument('--loss-curve', dest='loss_curve_path', type=str, default=None,
                           help='the path of saving image of loss curve')
+        self.add_argument('--acc-curve', dest='acc_curve_path', type=str, default=None,
+                          help='the path of saving image of accuracy curve')
         # self.add_argument('')
 

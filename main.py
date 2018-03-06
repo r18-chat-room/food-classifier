@@ -29,6 +29,7 @@ np.random.seed(int(time.time()))
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
+
     net = model_list[args.model](args.category_size)
     train_loader, valid_loader = get_train_valid_loader(
         path=args.data_path, scale_size=args.img_size, batch_size=args.batch_size,
@@ -42,10 +43,10 @@ if __name__ == '__main__':
     if args.op == 'info':
         print(net)
     elif args.op == 'train':
-        losses = op.train(net, train_loader,
-                          epochs=args.epoch, lr=args.lr,
-                          momentum=args.momentum, optim=args.optim,
-                          cuda=args.gpu)
+        losses, accuracies = op.train(net, train_loader, valid_loader,
+                                      epochs=args.epoch, lr=args.lr,
+                                      momentum=args.momentum, optim=args.optim,
+                                      cuda=args.gpu)
         if args.saving_model_path is not None:
             op.save_param(net, path=args.saving_model_path)
             logger.info('save success at {0}'.format(args.saving_model_path))
@@ -53,5 +54,10 @@ if __name__ == '__main__':
             plt.plot(losses)
             plt.savefig(args.loss_curve_path)
             logger.info('save loss curve at {0}'.format(args.loss_curve_path))
+        if args.acc_curve_path is not None:
+            plt.plot(accuracies[0])  # train_acc
+            plt.plot(accuracies[1])  # valid_acc
+            plt.savefig(args.acc_curve_path)
+            logger.info('save accuracy curve at {0}'.format(args.acc_curve_path))
     elif args.op == 'inference':
         pass
