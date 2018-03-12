@@ -28,6 +28,10 @@ mpl.rcParams['figure.figsize'] = (8, 6)
 np.random.seed(int(time.time()))
 
 if __name__ == '__main__':
+    logger.info(args)
+    logger.info('*'*10)
+    logger.info(categories)
+
     import matplotlib.pyplot as plt
 
     net = model_list[args.model](args.category_size)
@@ -53,11 +57,26 @@ if __name__ == '__main__':
         if args.loss_curve_path is not None:
             plt.plot(losses)
             plt.savefig(args.loss_curve_path)
+            plt.clf()
             logger.info('save loss curve at {0}'.format(args.loss_curve_path))
         if args.acc_curve_path is not None:
-            plt.plot(accuracies[0])  # train_acc
-            plt.plot(accuracies[1])  # valid_acc
+            plt.plot(accuracies[0], label='train_acc')  # train_acc
+            plt.plot(accuracies[1], label='valid_acc')  # valid_acc
+            plt.legend()
             plt.savefig(args.acc_curve_path)
+            plt.clf()
             logger.info('save accuracy curve at {0}'.format(args.acc_curve_path))
+        if args.distribution_path is not None:
+            distribution_mat = op.validate(
+                net, valid_loader, cuda=args.gpu, final_test=True, category_size=args.category_size
+            )
+            print(distribution_mat)
+            plt.xlim(0, args.category_size)
+            plt.ylim(0, args.category_size)
+            plt.pcolor(distribution_mat.numpy(), cmap=mpl.cm.Blues)
+            plt.savefig(args.distribution_path)
+            plt.clf()
+            logger.info('save distribution head map at {0}'.format(args.distribution_path))
+
     elif args.op == 'inference':
         pass

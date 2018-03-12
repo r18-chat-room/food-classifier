@@ -32,7 +32,7 @@ class Parser(argparse.ArgumentParser):
                           help='momentum in SGD optimization')
         self.add_argument('--epoch', type=int, default=80,
                           help='how many epochs to train')
-        self.add_argument('--batch-size', type=int, default=8,
+        self.add_argument('--batch-size', type=int, default=24,
                           help='how many samples per batch to load')
         self.add_argument('--optim', type=str, default='SGD', choices=['SGD', 'Adam'],
                           help='which optimization algorithm used in training')
@@ -42,5 +42,6 @@ class Parser(argparse.ArgumentParser):
                           help='the path of saving image of loss curve')
         self.add_argument('--acc-curve', dest='acc_curve_path', type=str, default=None,
                           help='the path of saving image of accuracy curve')
-        # self.add_argument('')
+        self.add_argument('--distri', dest='distribution_path', type=str, default=None,
+                          help='the path of saving image of the distribution of prediction')
 

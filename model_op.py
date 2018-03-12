@@ -4,7 +4,7 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 
 
-def train(model, train_loader, valid_loader, epochs, optim, lr, momentum, cuda):
+def train(model, train_loader, valid_loader, epochs, optim, lr, momentum, cuda, l2_lambda=0.01):
     """
     the phase of training.
 
@@ -51,7 +51,16 @@ def train(model, train_loader, valid_loader, epochs, optim, lr, momentum, cuda):
             total += y.data.size()[0]
 
             optimizer.zero_grad()
-            loss = criterion(y_, y)
+
+            l2_reg = None
+            for w in model.parameters():
+                if l2_reg is None:
+                    l2_reg = w.norm(2)
+                else:
+                    l2_reg += w.norm(2)
+
+            loss = criterion(y_, y) + l2_reg * l2_lambda
+
             loss_sum += loss  # calculate average loss in an epoch
             loss.backward()
             optimizer.step()
@@ -68,13 +77,15 @@ def train(model, train_loader, valid_loader, epochs, optim, lr, momentum, cuda):
         logger.info('epoch #{0}: train_loss={1:.5} | train_acc={2:.5%} | valid_acc={3:.5%}'
                     .format(epoch + 1, loss_avg, train_acc, valid_acc))
 
-    return losses, train_accs, valid_accs
+    return losses, (train_accs, valid_accs)
 
 
-def validate(model, loader, cuda):
+def validate(model, loader, cuda, final_test=False, category_size=24):
     """
     the phase of validation.
 
+    :param category_size:
+    :param final_test:
     :param model: the model object to be validated
     :param loader: the data loader of valid_dataset
     :param cuda: whether the model runs on on GPU via CUDA
@@ -84,6 +95,8 @@ def validate(model, loader, cuda):
     if cuda:
         model = model.cuda()
 
+    if final_test:
+        distribution_mat = torch.LongTensor(category_size, category_size).fill_(1)
     hit = 0
     total = 0
     for step, (x, y) in enumerate(loader):
@@ -94,7 +107,29 @@ def validate(model, loader, cuda):
         hit += torch.sum(y == y_).data[0]
         total += y.data.size()[0]
 
+        if final_test:
+            pred_stat(y_.data, y.data, distribution_mat)
+
+    if final_test:
+        distribution_mat = distribution_mat.float()
+        for ax in range(category_size):
+                distribution_mat[ax, :] /= torch.sum(distribution_mat[ax, :])
+        return distribution_mat
+
     return hit / total
+
+
+def pred_stat(pred, fact, mat):
+    """
+
+    :param pred: prediction value
+    :param fact: factual value
+    :param mat: distribution matrix
+
+    :return:
+    """
+    for y_, y in zip(pred, fact):
+        mat[y_][y] += 1
 
 
 def load_param(model, path):

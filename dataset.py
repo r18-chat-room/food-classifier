@@ -29,6 +29,7 @@ def get_train_valid_loader(path, scale_size, batch_size, valid_size, num_workers
         transforms.Resize(scale_size),
         transforms.CenterCrop(scale_size),
         transforms.RandomHorizontalFlip(),  # augment by horizontal flip
+        transforms.RandomRotation(20),      # augment by random rotation
         transforms.ToTensor(),
     ])
 
