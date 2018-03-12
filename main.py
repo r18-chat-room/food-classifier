@@ -50,7 +50,7 @@ if __name__ == '__main__':
         losses, accuracies = op.train(net, train_loader, valid_loader,
                                       epochs=args.epoch, lr=args.lr,
                                       momentum=args.momentum, optim=args.optim,
-                                      cuda=args.gpu)
+                                      cuda=args.gpu, lr_decay_interval=args.lr_decay)
         if args.saving_model_path is not None:
             op.save_param(net, path=args.saving_model_path)
             logger.info('save success at {0}'.format(args.saving_model_path))

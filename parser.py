@@ -44,4 +44,5 @@ class Parser(argparse.ArgumentParser):
                           help='the path of saving image of accuracy curve')
         self.add_argument('--distri', dest='distribution_path', type=str, default=None,
                           help='the path of saving image of the distribution of prediction')
-
+        self.add_argument('--lr-decay', type=int, default=25,
+                          help='after how many epochs the learning rate decayed')

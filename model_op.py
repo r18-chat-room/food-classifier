@@ -4,7 +4,7 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 
 
-def train(model, train_loader, valid_loader, epochs, optim, lr, momentum, cuda, l2_lambda=0.01):
+def train(model, train_loader, valid_loader, epochs, optim, lr, momentum, cuda, lr_decay_interval):
     """
     the phase of training.
 
@@ -16,6 +16,7 @@ def train(model, train_loader, valid_loader, epochs, optim, lr, momentum, cuda, 
     :param lr: learning rate
     :param momentum: momentum in SGD optimization
     :param cuda: whether the model runs on GPU via CUDA
+    :param lr_decay_interval: lr decayed interval epoch
 
     :return: list of history losses
     """
@@ -23,7 +24,7 @@ def train(model, train_loader, valid_loader, epochs, optim, lr, momentum, cuda, 
     logger.info('start training {0}: epochs={1}'.format(model.name, epochs))
 
     if optim == 'SGD':
-        optimizer = torch.optim.SGD(model.parameters(), momentum=momentum, lr=lr)
+        optimizer = torch.optim.SGD(model.parameters(), momentum=momentum, lr=lr, weight_decay=0.0005)
     else:
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
@@ -32,11 +33,14 @@ def train(model, train_loader, valid_loader, epochs, optim, lr, momentum, cuda, 
 
     epoch_size = len(train_loader)
     criterion = torch.nn.CrossEntropyLoss()
+
     losses = []
     train_accs = []
     valid_accs = []
 
     for epoch in range(epochs):
+        adjust_learning_rate(optimizer, lr, epoch, lr_decay_interval)   # lr decayed
+
         loss_sum = 0
         hit = 0
         total = 0
@@ -52,14 +56,15 @@ def train(model, train_loader, valid_loader, epochs, optim, lr, momentum, cuda, 
 
             optimizer.zero_grad()
 
-            l2_reg = None
-            for w in model.parameters():
-                if l2_reg is None:
-                    l2_reg = w.norm(2)
-                else:
-                    l2_reg += w.norm(2)
-
-            loss = criterion(y_, y) + l2_reg * l2_lambda
+            # l2_reg = None
+            # for w in model.parameters():
+            #     if l2_reg is None:
+            #         l2_reg = w.norm(2)
+            #     else:
+            #         l2_reg += w.norm(2)
+            #
+            # loss = criterion(y_, y) + l2_reg * l2_lambda
+            loss = criterion(y_, y)
 
             loss_sum += loss  # calculate average loss in an epoch
             loss.backward()
@@ -78,6 +83,20 @@ def train(model, train_loader, valid_loader, epochs, optim, lr, momentum, cuda, 
                     .format(epoch + 1, loss_avg, train_acc, valid_acc))
 
     return losses, (train_accs, valid_accs)
+
+
+def adjust_learning_rate(optimizer, init_lr, cur_epoch, interval_epoch):
+    """
+    Sets the learning rate to the initial LR decayed by 10 every x epochs.
+
+    :param init_lr: initial learning rate
+    :param optimizer: the optimizer object
+    :param cur_epoch: current epoch
+    :param interval_epoch: lr decayed interval epoch
+    """
+    lr = init_lr * (0.1 ** (cur_epoch // interval_epoch))
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = lr
 
 
 def validate(model, loader, cuda, final_test=False, category_size=24):
