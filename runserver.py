@@ -20,6 +20,7 @@ translate = {
     'shaomai': '烧麦',
     'yuntun': '云吞',
     'ganchaoniuhe': '干炒牛河',
+    'baiqieji': '白切鸡',
 }
 
 graph = None    # 计算图
