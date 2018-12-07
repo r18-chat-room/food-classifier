@@ -16,6 +16,11 @@ translate = {
     'xiajiao': '虾饺',
     'danta': '蛋挞',
     'guilinggao': '龟苓膏',
+    'zhengfengzhua': '蒸凤爪',
+    'shaomai': '烧麦',
+    'yuntun': '云吞',
+    'ganchaoniuhe': '干炒牛河',
+    'baiqieji': '白切鸡',
 }
 
 graph = None    # 计算图
