@@ -95,7 +95,7 @@ def classify(uri):
     results = np.squeeze(results)
     print(results)
     top1 = results.argsort()[-1]
-    return jsonify(category=labels[top1], confidence=float(results[top1]))
+    return jsonify(category=translate[labels[top1]], confidence=float(results[top1]))
 
 
 def init():
